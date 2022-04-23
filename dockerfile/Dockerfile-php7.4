@@ -1,0 +1,68 @@
+FROM php:7.4.7-apache
+
+# install
+RUN echo "deb http://security.debian.org jessie/updates main" >> /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get install -y --allow-downgrades \
+	dialog \
+	zlib1g \
+	zlib1g-dev \
+	libfreetype6-dev \
+	libfreetype6 \
+	libjpeg62-turbo-dev \
+	libmcrypt-dev \
+	libpng16-16 \
+	openssl \
+	libssl1.1 \
+	libxml2 \
+	libxml2-dev \
+	zip unzip \
+	libzip-dev \
+	git \
+	vim \
+	libicu-dev \
+	msmtp \
+	msmtp-mta \
+	mailutils \
+	guile-2.0-libs \
+	libncurses5 \
+	libreadline5 \
+	libonig-dev \
+	libpq-dev \
+	rsync \
+	lsyncd \
+	mariadb-client
+RUN docker-php-ext-install -j$(nproc) iconv pdo_mysql pdo_pgsql mbstring exif xml tokenizer zip intl
+RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
+RUN docker-php-ext-install -j$(nproc) gd
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
+
+# apache
+RUN ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/
+RUN ln -s /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/
+RUN ln -s /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/
+COPY apache/ssl/ssl-cert-snakeoil.key /etc/ssl/private/
+COPY apache/ssl/ssl-cert-snakeoil.pem /etc/ssl/certs/
+RUN chmod 400 /etc/ssl/private/ssl-cert-snakeoil.key
+RUN chmod 400 /etc/ssl/certs/ssl-cert-snakeoil.pem
+RUN groupmod -g 1000 www-data && usermod -u 1000 www-data
+RUN echo 'ServerName localhost:80' >> /etc/apache2/apache2.conf
+
+# php
+COPY apache/php/php.ini /usr/local/etc/php/php.ini
+COPY apache/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY apache/php/mail.ini /usr/local/etc/php/conf.d/mail.ini
+COPY apache/php/mcrypt.ini /usr/local/etc/php/conf.d/mcrypt.ini
+RUN yes | pecl install xdebug mcrypt-1.0.3
+
+# lsyncd
+COPY lsyncd/lsyncd.conf.lua /etc/lsyncd/lsyncd.conf.lua
+
+# msmtp
+COPY msmtp/msmtprc /etc/msmtprc
+
+# composer
+RUN curl -sS https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer
+RUN composer self-update
