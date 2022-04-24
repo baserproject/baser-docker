@@ -52,8 +52,7 @@ RUN echo 'ServerName localhost:80' >> /etc/apache2/apache2.conf
 COPY apache/php/php.ini /usr/local/etc/php/php.ini
 COPY apache/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 COPY apache/php/mail.ini /usr/local/etc/php/conf.d/mail.ini
-COPY apache/php/mcrypt.ini /usr/local/etc/php/conf.d/mcrypt.ini
-RUN yes | pecl install xdebug mcrypt-1.0.3
+RUN yes | pecl install xdebug
 
 # lsyncd
 COPY lsyncd/lsyncd.conf.lua /etc/lsyncd/lsyncd.conf.lua
