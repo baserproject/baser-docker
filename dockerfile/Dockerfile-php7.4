@@ -56,9 +56,6 @@ COPY apache/php/mail.ini /usr/local/etc/php/conf.d/mail.ini
 COPY apache/php/mcrypt.ini /usr/local/etc/php/conf.d/mcrypt.ini
 RUN yes | pecl install xdebug mcrypt-1.0.3
 
-# lsyncd
-COPY lsyncd/lsyncd.conf.lua /etc/lsyncd/lsyncd.conf.lua
-
 # msmtp
 COPY msmtp/msmtprc /etc/msmtprc
 

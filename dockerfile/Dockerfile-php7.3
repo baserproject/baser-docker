@@ -50,9 +50,6 @@ RUN chmod 400 /etc/ssl/private/ssl-cert-snakeoil.key \
 RUN groupmod -g 1000 www-data && usermod -u 1000 www-data
 RUN echo 'ServerName localhost:80' >> /etc/apache2/apache2.conf
 
-# lsyncd
-COPY lsyncd/lsyncd.conf.lua /etc/lsyncd/lsyncd.conf.lua
-
 # php
 RUN echo 'sendmail_path = "/usr/bin/msmtp -t"' > /usr/local/etc/php/conf.d/mail.ini \
 	&& echo "memory_limit = 256M" >> /usr/local/etc/php/php.ini \
@@ -65,7 +62,7 @@ RUN echo 'sendmail_path = "/usr/bin/msmtp -t"' > /usr/local/etc/php/conf.d/mail.
 	&& echo "xdebug.idekey=BASERCMS" >> /usr/local/etc/php/conf.d/xdebug.ini \
 	&& echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini \
 	&& echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini \
-	&& echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
+	&& echo "xdebug.start_with_request=no" >> /usr/local/etc/php/conf.d/xdebug.ini \
 	&& echo "xdebug.mode=debug,develop" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "extension=mcrypt.so" >> /usr/local/etc/php/conf.d/mcrypt.ini
 
