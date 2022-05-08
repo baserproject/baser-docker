@@ -29,7 +29,8 @@ RUN apt-get install -y --allow-downgrades \
 	libpq-dev \
 	rsync \
 	lsyncd \
-	mariadb-client
+	mariadb-client \
+	wget
 
 RUN docker-php-ext-install -j$(nproc) pdo_mysql pdo_pgsql mbstring exif xml zip intl
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
@@ -53,6 +54,11 @@ COPY apache/php/php.ini /usr/local/etc/php/php.ini
 COPY apache/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 COPY apache/php/mail.ini /usr/local/etc/php/conf.d/mail.ini
 RUN yes | pecl install xdebug
+
+# phpDocumentor
+wget https://phpdoc.org/phpDocumentor.phar
+chmod +x phpDocumentor.phar
+mv phpDocumentor.phar /usr/local/bin/phpDocumentor
 
 # msmtp
 COPY msmtp/msmtprc /etc/msmtprc
