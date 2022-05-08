@@ -56,9 +56,9 @@ COPY apache/php/mail.ini /usr/local/etc/php/conf.d/mail.ini
 RUN yes | pecl install xdebug
 
 # phpDocumentor
-wget https://phpdoc.org/phpDocumentor.phar
-chmod +x phpDocumentor.phar
-mv phpDocumentor.phar /usr/local/bin/phpDocumentor
+RUN wget https://phpdoc.org/phpDocumentor.phar
+RUN chmod +x phpDocumentor.phar
+RUN mv phpDocumentor.phar /usr/local/bin/phpDocumentor
 
 # msmtp
 COPY msmtp/msmtprc /etc/msmtprc
