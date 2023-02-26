@@ -63,6 +63,9 @@ RUN mv phpDocumentor.phar /usr/local/bin/phpDocumentor
 # msmtp
 COPY msmtp/msmtprc /etc/msmtprc
 
+# bashrc
+RUN echo 'PATH=$PATH:/var/www/html/vendor/bin' >> ~/.bashrc
+
 # composer
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
