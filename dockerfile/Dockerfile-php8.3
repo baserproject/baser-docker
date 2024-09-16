@@ -1,4 +1,4 @@
-FROM php:8.2.4-apache
+FROM php:8.3.8-apache
 
 # install
 RUN apt-get update
@@ -12,7 +12,7 @@ RUN apt-get install -y --allow-downgrades \
 	libmcrypt-dev \
 	libpng16-16 \
 	openssl \
-	libssl1.1 \
+	libssl3 \
 	libxml2 \
 	libxml2-dev \
 	zip unzip \
@@ -69,17 +69,3 @@ RUN echo 'PATH=$PATH:/var/www/html/vendor/bin' >> ~/.bashrc
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
 RUN composer self-update
-
-# baserCMS
-# この行以降キャッシュしない
-ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" /dev/null
-RUN git clone https://github.com/baserproject/ucmitz.git /var/www/html
-RUN chmod -R 777 /var/www/html/tmp
-RUN chmod -R 777 /var/www/html/logs
-RUN chmod 777 /var/www/html/plugins
-RUN chmod 777 /var/www/html/
-RUN chmod 777 /var/www/html/composer
-RUN chmod 777 /var/www/html/vendor
-RUN chmod 777 /var/www/html/config
-RUN chmod 777 /var/www/html/webroot/files
-RUN chmod 777 /var/www/html/db
