@@ -54,6 +54,12 @@ COPY apache/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 COPY apache/php/mail.ini /usr/local/etc/php/conf.d/mail.ini
 RUN yes | pecl install xdebug
 
+# opcache
+# 設定値は apache/php/opcache.ini に記載。拡張はイメージによって組み込み済み（php8.5）と .so 提供（php8.1〜8.4）が
+# あるため、未ロードのときだけ docker-php-ext-enable で有効化する
+COPY apache/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+RUN php -m | grep -q "Zend OPcache" || docker-php-ext-enable opcache
+
 # phpDocumentor
 RUN wget https://phpdoc.org/phpDocumentor.phar
 RUN chmod +x phpDocumentor.phar
